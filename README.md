@@ -8,7 +8,7 @@ Readers are welcomed to fork this repository to reproduce the experiments and fo
       author={Shimin DI, Quanming YAO, Yongqi ZHANG, and Lei CHEN},
       booktitle={2021 IEEE 37th International Conference on Data Engineering (ICDE)},
       pages={},
-      year={20221},
+      year={2021},
       organization={IEEE}
     }
 
