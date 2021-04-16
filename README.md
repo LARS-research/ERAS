@@ -21,6 +21,7 @@ Install PyTorch (>0.4.0)
     conda install pytorch -c pytorch
 
 Search and train the searched scoring functions from scratch
+
     python /one-shot-search/evaluate.py
 
 
