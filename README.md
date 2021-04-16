@@ -1,4 +1,4 @@
-# AutoSF
+# ERAS
 The code for our paper ["Efficient Relation-aware Scoring Function Search for Knowledge Graph Embedding"], which has been accepted by ICDE 2021.
 
 Readers are welcomed to fork this repository to reproduce the experiments and follow our work. Please kindly cite our paper
@@ -25,8 +25,8 @@ Search and train the searched scoring functions from scratch
 
 
 Related AutoML papers (ML Research group in 4Paradigm)
-- Searching to Sparsify Tensor Decomposition for N-ary Relational Data. Webconf 2021 [paper]()[code](https://github.com/AutoML-4Paradigm/S2S)
-- Interstellar: Searching Recurrent Architecture for Knowledge Graph Embedding. NeurIPS 2020 [paper](https://arxiv.org/pdf/1911.07132.pdf)[code](https://github.com/AutoML-4Paradigm/Interstellar)
-- AutoSF: Searching Scoring Functions for Knowledge Graph Embedding. ICDE 2020 [paper](https://arxiv.org/pdf/1904.11682.pdf)[code](https://github.com/AutoML-4Paradigm/AutoSF)
-- Simple and Automated Negative Sampling for Knowledge Graph Embedding. ICDE 2019 [paper](https://arxiv.org/abs/1812.06410) [code](https://github.com/yzhangee/NSCaching)
+- Searching to Sparsify Tensor Decomposition for N-ary Relational Data. Webconf 2021 [paper](), [code](https://github.com/AutoML-4Paradigm/S2S)
+- Interstellar: Searching Recurrent Architecture for Knowledge Graph Embedding. NeurIPS 2020 [paper](https://arxiv.org/pdf/1911.07132.pdf), [code](https://github.com/AutoML-4Paradigm/Interstellar)
+- AutoSF: Searching Scoring Functions for Knowledge Graph Embedding. ICDE 2020 [paper](https://arxiv.org/pdf/1904.11682.pdf), [code](https://github.com/AutoML-4Paradigm/AutoSF)
+- Simple and Automated Negative Sampling for Knowledge Graph Embedding. ICDE 2019 [paper](https://arxiv.org/abs/1812.06410), [code](https://github.com/yzhangee/NSCaching)
 
