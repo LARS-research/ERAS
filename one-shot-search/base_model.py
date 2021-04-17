@@ -460,7 +460,7 @@ class BaseModel(object):
                             
             scheduler.step()
                         
-            print("Epoch: %d/%d, Loss=%.2f, Stand Time=%.2f"%(epoch+1, self.args.n_stand_epoch, time.time()-start, epoch_loss/n_train))
+            print("Epoch: %d/%d, Stand Time=%.2f, Loss=%.2f"%(epoch+1, self.args.n_stand_epoch, time.time()-start, epoch_loss/n_train))
             
             if (epoch + 1) % 5 == 0:
                 test, randint = True, None

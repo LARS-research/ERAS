@@ -31,8 +31,8 @@ def register_default_args():
               
     # epoch and batch
     parser.add_argument('--n_batch', type=int, default=4096, help='number of training batches')
-    parser.add_argument('--n_oas_epoch', type=int, default=500, help='')
-    parser.add_argument('--n_stand_epoch', type=int, default=300, help='')
+    parser.add_argument('--n_oas_epoch', type=int, default=300, help='')
+    parser.add_argument('--n_stand_epoch', type=int, default=5, help='')
     
     # hyper-parameters related to embeddings
     parser.add_argument('--optim', type=str, default='adagrad', help='optimizer for embedding')
@@ -158,7 +158,7 @@ def main(args):
     # record the topK and train them from scratch
     print ("re-train top-K structs in the search")
     filePath = os.path.join(directory, dataset + '_oas_topK_' + str(m) + "_" + str(n)  + '.txt')
-    K = 20
+    K = 30
     indices = record(filePath, K, rewards, structs, relas, extractType="top")
     for i in indices:
         model.train_stand(train_data, valid_data, structs[i], relas[i], rewards[i])
@@ -176,14 +176,14 @@ if __name__ == '__main__':
     
     #parser.add_argument('--loss', type=str, default="log", help='log or bin')
     
-    parser.add_argument('--n', type=int, default=4, help='number of groups')
-    parser.add_argument('--m', type=int, default=4, help='number of cluster')    # please note that args.n_dim must can be divided by m
+    parser.add_argument('--n', type=int, default=3, help='number of groups')
+    parser.add_argument('--m', type=int, default=4, help='number of blocks')    # please note that args.n_dim must can be divided by m
     parser.add_argument('--clu', type=str, default="scu", help='scu or pde')
     
-    parser.add_argument('--dataset', type=str, default="umls", help='')
+    parser.add_argument('--dataset', type=str, default="WN18RR", help='')
     parser.add_argument('--GPU', type=bool, default=True, help='')
-    parser.add_argument('--gpu', type=int, default=0, help='set gpu #')                        
-    parser.add_argument('--trial', type=int, default=101, help='')
+    parser.add_argument('--gpu', type=int, default=1, help='set gpu #')                        
+    parser.add_argument('--trial', type=int, default=2, help='')
 
     args = parser.parse_args()
     

@@ -134,9 +134,10 @@ def default_search_hyper(args):
         args.n_batch = 512
         args.decay_rate = 0.9903840888956048
         #args.n_dim = 512 #AutoSF searched
-        #args.n_epoch = 300 #AutoSF searched
+        args.n_stand_epoch = 300 #AutoSF searched
         args.n_dim = 512
         args.epoch_per_test = 20 #20
+        args.n = 3
             
     elif args.dataset == 'FB15K237':
         #args.lr = 0.0885862663108572
@@ -148,7 +149,7 @@ def default_search_hyper(args):
         args.decay_rate = 0.9915158217372417
         args.n_batch = 512
         #args.n_dim = 2048 #AutoSF searched
-        #args.n_epoch = 500 #AutoSF searched
+        args.n_stand_epoch = 500 #AutoSF searched
         args.n_dim = 512 #2048
         args.epoch_per_test = 15
         
@@ -158,16 +159,17 @@ def default_search_hyper(args):
         args.decay_rate = 0.9908870395744
         args.n_batch = 512 #256
         #args.n_dim = 1024 #AutoSF searched
-        #args.n_epoch = 400 #AutoSF searched
+        args.n_stand_epoch = 400 #AutoSF searched
         args.n_dim = 512
         args.epoch_per_test = 15
+        args.n = 3
         
     elif args.dataset == 'FB15K':
         args.lr = 0.7040329784234945
         args.lamb = 3.49037818818688153e-5
         args.decay_rate = 0.9909065915902778
         args.n_batch = 512
-        #args.n_epoch = 700 #AutoSF searched
+        args.n_stand_epoch = 700 #AutoSF searched
         #args.n_dim = 2048 #AutoSF searched
         args.n_dim = 512
         args.epoch_per_test = 15
@@ -178,9 +180,18 @@ def default_search_hyper(args):
         args.decay_rate = 0.9914972709145934
         args.n_batch = 512 # 2048
         #args.n_dim = 1024
-        #args.n_epoch = 400
+        args.n_stand_epoch = 400
         args.n_dim = 512
         args.epoch_per_test = 20
+    
+    else:
+        args.lr = 0.47102439590590006
+        args.lamb = 0.0002204803280058515
+        args.n_batch = 512
+        args.decay_rate = 0.9903840888956048
+        args.n_stand_epoch = 300 
+        args.n_dim = 512
+        args.epoch_per_test = 20 
     
     if args.clu == "pde":
         rela_cluster_list = {"WN18RR":[1, 1, 0, 1, 1, 0, 2, 0, 0, 1, 0],
