@@ -31,8 +31,8 @@ def register_default_args():
               
     # epoch and batch
     parser.add_argument('--n_batch', type=int, default=4096, help='number of training batches')
-    parser.add_argument('--n_oas_epoch', type=int, default=5, help='')
-    parser.add_argument('--n_stand_epoch', type=int, default=5, help='')
+    parser.add_argument('--n_oas_epoch', type=int, default=500, help='')
+    parser.add_argument('--n_stand_epoch', type=int, default=300, help='')
     
     # hyper-parameters related to embeddings
     parser.add_argument('--optim', type=str, default='adagrad', help='optimizer for embedding')
@@ -181,8 +181,8 @@ if __name__ == '__main__':
     parser.add_argument('--clu', type=str, default="scu", help='scu or pde')
     
     parser.add_argument('--dataset', type=str, default="umls", help='')
-    parser.add_argument('--GPU', type=bool, default=False, help='')
-    parser.add_argument('--gpu', type=int, default=3, help='set gpu #')                        
+    parser.add_argument('--GPU', type=bool, default=True, help='')
+    parser.add_argument('--gpu', type=int, default=0, help='set gpu #')                        
     parser.add_argument('--trial', type=int, default=101, help='')
 
     args = parser.parse_args()
