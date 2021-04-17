@@ -22,7 +22,7 @@ Install PyTorch (>0.4.0)
 
 Search and train the searched scoring functions from scratch
 
-    python /one-shot-search/evaluate.py
+    python one-shot-search/evaluate.py
 
 
 Related AutoML papers (ML Research group in 4Paradigm)
