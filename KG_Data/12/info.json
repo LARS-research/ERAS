@@ -1,9 +1,0 @@
-{
-    "task": "12",
-    "time_budget": 15000,
-    "pred_time_budget": 10000,
-    "start_time": 1550654179,
-    "temp_dir":"./temp_output/data12",
-    "data_type":"ent_rel",
-    "data_language":"zh-cn"
-}
