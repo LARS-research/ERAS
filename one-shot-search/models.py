@@ -3,23 +3,26 @@ import torch.nn as nn
 
 
 class KGEModule(nn.Module):
-    def __init__(self, n_ent, n_rel, args, GPU, rela_cluster, m, n):
+    def __init__(self, n_ent, n_rel, args, rela_cluster, model_type):
+        
+        
+        
         super(KGEModule, self).__init__()
         self.n_ent = n_ent
         self.n_rel = n_rel
         
         self.args = args
-        self.n_dim = args.n_dim
+        self.n_dim = args.n_search_dim if model_type == "search" else args.n_stand_dim
         self.lamb = args.lamb
 
-        self.ent_embed = nn.Embedding(n_ent, args.n_dim)
-        self.rel_embed = nn.Embedding(n_rel, args.n_dim)
+        self.ent_embed = nn.Embedding(n_ent, self.n_dim)
+        self.rel_embed = nn.Embedding(n_rel, self.n_dim)
         self.init_weight()
         
-        self.K = m
-        self.GPU = GPU
+        self.K = args.m
+        self.GPU = args.GPU
         self.rela_cluster = rela_cluster
-        self.n_cluster = n
+        self.n_cluster = args.n
         
     def init_weight(self):
         for param in self.parameters():

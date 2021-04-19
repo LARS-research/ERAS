@@ -57,19 +57,14 @@ def _init_struct(sf, m=4, n=3):
     return struct
 
 class BaseModel(object):
-    def __init__(self, n_ent, n_rel, args, rela_cluster):
+    def __init__(self, n_ent, n_rel, args, rela_cluster, model_type):
         
-        
-        GPU = args.GPU
-        
-        m = args.m
-        n = args.n
         cluster_way = args.clu
         
 
-        self.model = KGEModule(n_ent, n_rel, args, GPU, rela_cluster, m, n)
+        self.model = KGEModule(n_ent, n_rel, args, rela_cluster, model_type)
         
-        if GPU:
+        if args.GPU:
             self.model.cuda()
             
         self.n_ent = n_ent
@@ -79,14 +74,13 @@ class BaseModel(object):
         
         self.time_tot = 0
         self.args = args
+                
+        self.n_dim = args.n_search_dim if model_type == "search" else args.n_stand_dim
         
-        self.n_dim = args.n_dim
+        self.K = args.m
+        self.n = args.n
         
-        self.K = m
-        
-        self.n = n
-        
-        self.GPU = GPU
+        self.GPU = args.GPU
         
         self.cluster_way = cluster_way
         
@@ -94,21 +88,21 @@ class BaseModel(object):
         
 
         """build controller and sub-model"""
+        if model_type == "search":
+            self.controller = None
+            self.build_controller()
+            
+            #print(self.args.controller_optim)
+            
+            controller_lr = 3.5e-4
+            controller_optimizer = _get_optimizer(self.args.controller_optim)
+            self.controller_optim = controller_optimizer(self.controller.parameters(), lr=controller_lr)
+            
+            self.derived_raward_history = []
+            self.derived_struct_history = []
+            if self.cluster_way == "scu":
+                self.rela_cluster_history = []
         
-        self.controller = None
-        self.build_controller()
-        
-        #print(self.args.controller_optim)
-        
-        controller_lr = 3.5e-4
-        controller_optimizer = _get_optimizer(self.args.controller_optim)
-        self.controller_optim = controller_optimizer(self.controller.parameters(), lr=controller_lr)
-        
-        self.derived_raward_history = []
-        self.derived_struct_history = []
-        if self.cluster_way == "scu":
-            self.rela_cluster_history = []
-    
         
     def build_controller(self):
         
@@ -401,8 +395,10 @@ class BaseModel(object):
             print("Epoch: %d/%d, Search Time=%.2f, Loss=%.2f, Sampled Val MRR=%.8f, Tst MRR=%.8f"%(epoch+1, self.args.n_oas_epoch, self.time_tot, epoch_loss/n_train, 
                                                                           self.derived_raward_history[-1], test_mrr))
         
-    def train_stand(self, train_data, valid_data, derived_struct, rela_cluster, mrr):
+    def train_stand(self, train_data, valid_data, derived_struct, rela_cluster, mrr, tester_val, tester_tst):
                 
+        self.tester_val, self.tester_tst = tester_val, tester_tst
+        
         self.rela_to_dict(rela_cluster)
 
         self.args.perf_file = os.path.join(self.args.out_dir, self.args.dataset + '_std_' + str(self.args.m) + "_" + str(self.args.n)  + "_" + str(mrr) + '.txt')
@@ -468,7 +464,7 @@ class BaseModel(object):
                 valid_mrr, valid_mr, valid_1, valid_3, valid_10 = self.tester_val(derived_struct, test, randint)
                 test_mrr, test_mr, test_1, test_3, test_10 = self.tester_tst(derived_struct, test, randint)
                 
-                out_str = '%d \t %.2f \t %.2f \t %.4f  %.1f %.4f %.4f %.4f\t%.4f %.1f %.4f %.4f %.4f\n' % (epoch, self.time_tot, epoch_loss/n_train,\
+                out_str = '%d \t %.2f \t %.2f \t %.4f  %.1f %.4f %.4f %.4f\t%.4f %.1f %.4f %.4f %.4f\n' % (epoch, time.time()-start, epoch_loss/n_train,\
                             valid_mrr, valid_mr, valid_1, valid_3, valid_10, \
                             test_mrr, test_mr, test_1, test_3, test_10)
                 

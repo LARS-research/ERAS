@@ -36,8 +36,8 @@ def logger_init(args):
 
 
 def plot_config(args):
-    out_str = "\nn_batch:{}, n_oas_epoch:{}, n_stand_epoch:{}, optim:{}, lr:{} lamb:{}, decay_rate:{}, n_dim:{}, controller_optim:{}, n_controller_epoch:{}, n_derive_sample:{}\n".format(
-            args.n_batch, args.n_oas_epoch, args.n_stand_epoch, args.optim, args.lr, args.lamb, args.decay_rate, args.n_dim, args.controller_optim, args.n_controller_epoch, args.n_derive_sample)
+    out_str = "\nn_batch:{}, n_oas_epoch:{}, n_stand_epoch:{}, optim:{}, lr:{} lamb:{}, decay_rate:{}, n_search_dim:{}, n_stand_dim:{}, controller_optim:{}, n_controller_epoch:{}, n_derive_sample:{}\n".format(
+            args.n_batch, args.n_oas_epoch, args.n_stand_epoch, args.optim, args.lr, args.lamb, args.decay_rate, args.n_search_dim, args.n_stand_dim, args.controller_optim, args.n_controller_epoch, args.n_derive_sample)
     print(out_str)
     with open(args.perf_file, 'a') as f:
         f.write(out_str)
@@ -133,34 +133,33 @@ def default_search_hyper(args):
         args.lamb = 0.0002204803280058515       # ComplEx
         args.n_batch = 512
         args.decay_rate = 0.9903840888956048
-        #args.n_dim = 512 #AutoSF searched
-        args.n_stand_epoch = 300 #AutoSF searched
-        args.n_dim = 512
-        args.epoch_per_test = 20 #20
+        args.n_oas_epoch = 300 
+        args.n_stand_epoch = 300 
+        args.n_stand_dim = 512
+        args.epoch_per_test = 20
         args.n = 3
             
     elif args.dataset == 'FB15K237':
         #args.lr = 0.0885862663108572
         #args.lamb = 0.0016177695659237597
         #args.decay_rate = 0.9931763998742731
-        #args.n_batch = 256
         args.lr = 0.1783468990895745
         args.lamb = 0.0025173667237246883
         args.decay_rate = 0.9915158217372417
-        args.n_batch = 512
-        #args.n_dim = 2048 #AutoSF searched
-        args.n_stand_epoch = 500 #AutoSF searched
-        args.n_dim = 512 #2048
+        args.n_batch = 256
+        args.n_oas_epoch = 700 
+        args.n_stand_epoch = 500
+        args.n_stand_dim = 2048
         args.epoch_per_test = 15
         
     elif args.dataset == 'WN18':
         args.lr = 0.10926076305780041
         args.lamb = 0.0003244851835920663
         args.decay_rate = 0.9908870395744
-        args.n_batch = 512 #256
-        #args.n_dim = 1024 #AutoSF searched
-        args.n_stand_epoch = 400 #AutoSF searched
-        args.n_dim = 512
+        args.n_batch = 256
+        args.n_oas_epoch = 300 
+        args.n_stand_epoch = 400
+        args.n_stand_dim = 1024
         args.epoch_per_test = 15
         args.n = 3
         
@@ -169,19 +168,18 @@ def default_search_hyper(args):
         args.lamb = 3.49037818818688153e-5
         args.decay_rate = 0.9909065915902778
         args.n_batch = 512
-        args.n_stand_epoch = 700 #AutoSF searched
-        #args.n_dim = 2048 #AutoSF searched
-        args.n_dim = 512
+        args.n_oas_epoch = 700 
+        args.n_stand_epoch = 700 
+        args.n_stand_dim = 2048
         args.epoch_per_test = 15
         
     elif args.dataset == 'YAGO':
         args.lr = 0.9513908770180219
         args.lamb = 0.00021779088577909324
         args.decay_rate = 0.9914972709145934
-        args.n_batch = 512 # 2048
-        #args.n_dim = 1024
+        args.n_batch = 2048
         args.n_stand_epoch = 400
-        args.n_dim = 512
+        args.n_stand_dim = 1024
         args.epoch_per_test = 20
     
     else:
@@ -189,9 +187,11 @@ def default_search_hyper(args):
         args.lamb = 0.0002204803280058515
         args.n_batch = 512
         args.decay_rate = 0.9903840888956048
-        args.n_stand_epoch = 300 
-        args.n_dim = 512
+        args.n_stand_epoch = 5 
+        args.n_search_dim = 512
+        args.n_stand_dim = 512
         args.epoch_per_test = 20 
+    
     
     if args.clu == "pde":
         rela_cluster_list = {"WN18RR":[1, 1, 0, 1, 1, 0, 2, 0, 0, 1, 0],

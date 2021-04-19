@@ -31,7 +31,7 @@ def register_default_args():
               
     # epoch and batch
     parser.add_argument('--n_batch', type=int, default=4096, help='number of training batches')
-    parser.add_argument('--n_oas_epoch', type=int, default=300, help='')
+    parser.add_argument('--n_oas_epoch', type=int, default=5, help='')
     parser.add_argument('--n_stand_epoch', type=int, default=5, help='')
     
     # hyper-parameters related to embeddings
@@ -39,7 +39,8 @@ def register_default_args():
     parser.add_argument('--lr', type=float, default=0.7, help='set learning rate')
     parser.add_argument('--lamb', type=float, default=0.4, help='set weight decay value')
     parser.add_argument('--decay_rate', type=float, default=1.0, help='set weight decay value')
-    parser.add_argument('--n_dim', type=int, default=256, help='set embedding dimension')
+    parser.add_argument('--n_search_dim', type=int, default=512, help='set embedding dimension')
+    parser.add_argument('--n_stand_dim', type=int, default=256, help='set embedding dimension')
 
     # hyper-parameters related to embeddings
     parser.add_argument('--controller_optim', type=str, default='adam', help='optimizer for controller')
@@ -137,7 +138,7 @@ def main(args):
     
     plot_config(args)
 
-    model = BaseModel(n_ent, n_rel, args, rela_cluster)
+    model = BaseModel(n_ent, n_rel, args, rela_cluster, "search")
    
     if cluster_way == "scu":
         searched, derived = model.mm_train(train_data, valid_data, tester_val, tester_tst, tester_trip_class)
@@ -154,20 +155,24 @@ def main(args):
         f.write("structs:"+ str(structs) +"\n")
         if cluster_way == "scu":
             f.write("rela clusters:"+ str(relas) +"\n")
+        
+    """stand-alone training of searched scoring functions"""
+    model = BaseModel(n_ent, n_rel, args, rela_cluster, "stand")
     
     # record the topK and train them from scratch
     print ("re-train top-K structs in the search")
+        
+    K = 2
     filePath = os.path.join(directory, dataset + '_oas_topK_' + str(m) + "_" + str(n)  + '.txt')
-    K = 30
     indices = record(filePath, K, rewards, structs, relas, extractType="top")
+    
     for i in indices:
-        model.train_stand(train_data, valid_data, structs[i], relas[i], rewards[i])
+        model.train_stand(train_data, valid_data, structs[i], relas[i], rewards[i], tester_val, tester_tst)
     
     ## train the final struct
     #print ("train the final struct and rela from scratch")
     #model.train_stand(train_data, valid_data, derived_struct, derived_cluster, derived_mrr)
     
-    #return rewards, structs
 
 
 if __name__ == '__main__':
@@ -176,14 +181,14 @@ if __name__ == '__main__':
     
     #parser.add_argument('--loss', type=str, default="log", help='log or bin')
     
-    parser.add_argument('--n', type=int, default=3, help='number of groups')
+    parser.add_argument('--n', type=int, default=4, help='number of groups')
     parser.add_argument('--m', type=int, default=4, help='number of blocks')    # please note that args.n_dim must can be divided by m
     parser.add_argument('--clu', type=str, default="scu", help='scu or pde')
     
-    parser.add_argument('--dataset', type=str, default="WN18RR", help='')
-    parser.add_argument('--GPU', type=bool, default=True, help='')
-    parser.add_argument('--gpu', type=int, default=1, help='set gpu #')                        
-    parser.add_argument('--trial', type=int, default=2, help='')
+    parser.add_argument('--dataset', type=str, default="umls", help='')
+    parser.add_argument('--GPU', type=bool, default=False, help='')
+    parser.add_argument('--gpu', type=int, default=0, help='set gpu #')                        
+    parser.add_argument('--trial', type=int, default=100, help='')
 
     args = parser.parse_args()
     
@@ -191,7 +196,7 @@ if __name__ == '__main__':
     
     model = main(args)
 
-                
+    
 
 
 
