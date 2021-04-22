@@ -82,9 +82,9 @@ def main(args, struct, rela, reward, params=None):
     print("Number of train:{}, valid:{}, test:{}.".format(len(train_data[0]), len(valid_data[0]), len(test_data[0])))
     
     heads, tails = loader.heads_tails()
-    train_data = [torch.LongTensor(vec[0:100]) for vec in train_data]
-    valid_data = [torch.LongTensor(vec[0:100]) for vec in valid_data]
-    test_data  = [torch.LongTensor(vec[0:100]) for vec in test_data]
+    train_data = [torch.LongTensor(vec) for vec in train_data]
+    valid_data = [torch.LongTensor(vec) for vec in valid_data]
+    test_data  = [torch.LongTensor(vec) for vec in test_data]
     
     # the default settings for correspdonding dataset
     args, rela_cluster = default_search_hyper(args)
@@ -163,14 +163,14 @@ if __name__ == '__main__':
     parser.add_argument('--m', type=int, default=4, help='number of cluster')    # please note that args.n_dim must can be divided by m
     parser.add_argument('--clu', type=str, default="scu", help='scu or pde')
     
-    parser.add_argument('--dataset', type=str, default="WN18RR", help='')
+    parser.add_argument('--dataset', type=str, default="umls", help='')
     parser.add_argument('--GPU', type=bool, default=False, help='')
     parser.add_argument('--gpu', type=int, default=1, help='set gpu #')                        
     parser.add_argument('--trial', type=int, default=101, help='')
     args = parser.parse_args()    
     args.task_dir = "../KG_Data/" + args.dataset
     
-    structPath = "struct/WN18RR.txt"
+    structPath = "struct/umls/umls_oas_topK_4_4.txt"
     
     reward_rela_struct_list = read_struct_scu(structPath)
     
