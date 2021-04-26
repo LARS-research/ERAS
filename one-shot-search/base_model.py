@@ -141,7 +141,7 @@ class BaseModel(object):
             return (self.derived_raward_history, self.derived_struct_history, self.rela_cluster_history), (derived_mrr, derived_struct, self.rela_cluster)
         
         elif self.cluster_way == "pde":
-            return self.derived_raward_history, self.derived_struct_history, derived_struct
+            return (self.derived_raward_history, self.derived_struct_history), (derived_mrr, derived_struct)
         
     
     def get_reward(self, struct_list, test=False, random=True):
@@ -400,7 +400,7 @@ class BaseModel(object):
         self.tester_val, self.tester_tst = tester_val, tester_tst
         
         self.rela_to_dict(rela_cluster)
-
+        
         self.args.perf_file = os.path.join(self.args.out_dir, self.args.dataset + '_std_' + str(self.args.m) + "_" + str(self.args.n)  + "_" + str(mrr) + '.txt')
         plot_config(self.args)
         
@@ -420,6 +420,7 @@ class BaseModel(object):
         start = time.time()
         best_mrr = 0
 
+
         for epoch in range(self.args.n_stand_epoch):
                 
                         
@@ -438,12 +439,13 @@ class BaseModel(object):
             epoch_loss = 0
             n_iters = 0
             #lr = scheduler.get_lr()[0]
+
             
             # train model weights
             for h, t, r in batch_by_size(n_batch, head, tail, rela, n_sample=n_train):
     
                 self.model.zero_grad()
-    
+                
                 loss = self.model.forward(derived_struct, h, t, r, self.cluster_rela_dict)
                 loss += self.args.lamb * self.model.regul
                 loss.backward()
@@ -476,6 +478,7 @@ class BaseModel(object):
                 with open(self.args.perf_file, 'a+') as f:
                     f.write(out_str)
                     
+            
         with open(self.args.perf_file, 'a+') as f:
             f.write("best performance:" + best_str + "\n")
             f.write("struct:" + str(derived_struct) + "\n")
