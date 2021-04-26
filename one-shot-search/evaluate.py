@@ -5,7 +5,7 @@ from read_data import DataLoader
 from utils import logger_init, plot_config, gen_struct, default_search_hyper, record
 from select_gpu import select_gpu
 from base_model import BaseModel
-
+import numpy as np
 
 from hyperopt_master.hyperopt import fmin, tpe, hp, STATUS_OK, Trials, partial
 
@@ -61,11 +61,6 @@ main function
 """
 def main(args):
 
-    dataset = args.dataset
-    m, n = args.m, args.n
-    cluster_way = args.clu
-    trial = args.trial
-    
     # set number of threads in pytorch
     torch.set_num_threads(6)
     
@@ -90,6 +85,11 @@ def main(args):
     
     # the default settings for correspdonding dataset
     args, rela_cluster = default_search_hyper(args)
+    
+    dataset = args.dataset
+    m, n = args.m, args.n
+    cluster_way = args.clu
+    trial = args.trial
        
     if args.classification:
         valid_trip_pos, valid_trip_neg = loader.load_triplets('valid')
@@ -144,8 +144,11 @@ def main(args):
         searched, derived = model.mm_train(train_data, valid_data, tester_val, tester_tst, tester_trip_class)
         rewards, structs, relas = searched
         derived_mrr, derived_struct, derived_cluster = derived
-    #elif cluster_way == "pde" or "one_clu":
-    #    rewards, structs, derived_struct = model.mm_train(train_data, valid_data, tester_val, tester_tst, tester_trip_class)
+    elif cluster_way == "pde":
+        searched, derived = model.mm_train(train_data, valid_data, tester_val, tester_tst, tester_trip_class)
+        rewards, structs = searched
+        derived_mrr, derived_struct = derived
+        relas = [list(rela_cluster) for i in range(args.n_oas_epoch)]
     
     # record the search procedure: valid mrr, struct, rela_cluster
     rewards = torch.Tensor(rewards).tolist()
@@ -162,7 +165,7 @@ def main(args):
     # record the topK and train them from scratch
     print ("re-train top-K structs in the search")
         
-    K = 2
+    K = 30
     filePath = os.path.join(directory, dataset + '_oas_topK_' + str(m) + "_" + str(n)  + '.txt')
     indices = record(filePath, K, rewards, structs, relas, extractType="top")
     
@@ -181,14 +184,14 @@ if __name__ == '__main__':
     
     #parser.add_argument('--loss', type=str, default="log", help='log or bin')
     
-    parser.add_argument('--n', type=int, default=4, help='number of groups')
+    parser.add_argument('--n', type=int, default=4, help='number of groups')   # stored in defalut
     parser.add_argument('--m', type=int, default=4, help='number of blocks')    # please note that args.n_dim must can be divided by m
-    parser.add_argument('--clu', type=str, default="scu", help='scu or pde')
+    parser.add_argument('--clu', type=str, default="pde", help='scu or pde')
     
-    parser.add_argument('--dataset', type=str, default="umls", help='')
-    parser.add_argument('--GPU', type=bool, default=False, help='')
-    parser.add_argument('--gpu', type=int, default=0, help='set gpu #')                        
-    parser.add_argument('--trial', type=int, default=100, help='')
+    parser.add_argument('--dataset', type=str, default="WN18", help='')
+    parser.add_argument('--GPU', type=bool, default=True, help='')
+    parser.add_argument('--gpu', type=int, default=1, help='set gpu #')                        
+    parser.add_argument('--trial', type=str, default="best1", help='')
 
     args = parser.parse_args()
     
